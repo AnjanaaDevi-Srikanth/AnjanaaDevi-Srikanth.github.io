@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html><head>
+<title>Lab 3 Assignment</title>
+<style>
+
+  /* CSS goes here  */
+  body {
+    background-color: rgb(196, 194, 194);
+    font-family: Arial, Helvetica, sans-serif;
+    text-align: center;
+    padding: 25px;
+    }
+  
+   h1 {
+  color: coral
+   }
+  
+  table {
+      margin-left: auto;
+      margin-right: auto;
+      width: 50%;
+      border: 1px solid;
+      text-align:center;
+      padding:25px;
+      height: 50px;
+      vertical-align: bottom;
+  }
+  
+  tr:hover {background-color: coral;}
+
+</style>
+</head>
+<body>
+
+<h1>Singapore PSI table</h1>
+<h4 id="timestring">2022-02-13T 19:08:53(+08:00)</h4>
+<table id="PSItable">
+    <tbody><tr>
+        <th>Metric</th>
+        <th>National</th>
+        <th>Central</th>
+        <th>West</th>
+        <th>East</th>
+        <th>North</th>
+        <th>South</th>
+    </tr>
+</tbody></table>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script>
+
+    /* to make a function that adds data to tables*/
+    var tableadd = (datapt, rownum) => {
+    var td = document.createElement('td')
+    td.textContent = datapt
+    rownum.appendChild(td)
+    }
+
+fetch('https://api.data.gov.sg/v1/environment/psi')
+  .then(response => response.json())
+  .then(data => {
+    /* to get readings*/
+    var table = document.querySelector('#PSItable')
+    var read = data.items[0].readings
+    console.log(read)
+    /* for loop to put in rows in table*/
+    for (var data in read) {
+        var trow = document.createElement('tr')
+        table.appendChild(trow)
+
+        tableadd(data, trow)
+
+        for (var field of ['national', 'central', 'west', 'east', 'north', 'south'])
+            tableadd(read[data][field], trow)
+    }
+  
+    let timestamp = data.items[0].update_timestamp;
+    let readings = data.items[0].readings;
+    console.log(timestamp);
+    console.log(readings);
+    
+    $("#timestring").text(timestamp);
+  
+  });
+
+
+</script>
+
+<script>mendeleyWebImporter = {
+  downloadPdfs(e,t) { return this._call('downloadPdfs', [e,t]); },
+  open() { return this._call('open', []); },
+  setLoginToken(e) { return this._call('setLoginToken', [e]); },
+  _call(methodName, methodArgs) {
+    const id = Math.random();
+    window.postMessage({ id, token: '0.9296195050532388', methodName, methodArgs }, 'https://chi-loong.github.io');
+    return new Promise(resolve => {
+      const listener = window.addEventListener('message', event => {
+        const data = event.data;
+        if (typeof data !== 'object' || !('result' in data) || data.id !== id) return;
+        window.removeEventListener('message', listener);
+        resolve(data.result);
+      });
+    });
+  }
+};</script></body></html>
