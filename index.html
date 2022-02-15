@@ -62,7 +62,9 @@ fetch('https://api.data.gov.sg/v1/environment/psi')
     /* to get readings*/
     var table = document.querySelector('#PSItable')
     var read = data.items[0].readings
-    console.log(read)
+    let timestamp = data.items[0].update_timestamp;
+    $("#timestring").text(timestamp);
+    
     /* for loop to put in rows in table*/
     for (var data in read) {
         var trow = document.createElement('tr')
@@ -73,13 +75,7 @@ fetch('https://api.data.gov.sg/v1/environment/psi')
         for (var field of ['national', 'central', 'west', 'east', 'north', 'south'])
             tableadd(read[data][field], trow)
     }
-  
-    let timestamp = data.items[0].update_timestamp;
-    let readings = data.items[0].readings;
-    console.log(timestamp);
-    console.log(readings);
-    
-    $("#timestring").text(timestamp);
+   
   
   });
 
